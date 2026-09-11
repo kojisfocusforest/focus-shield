@@ -26,7 +26,7 @@
     }
     .panel-container {
       width: 95%;
-      max-width: 550px;
+      max-width: 600px;
       background: white;
       padding: 30px;
       border-radius: 16px;
@@ -39,30 +39,18 @@
     .intercept-theme { border-top: 10px solid #e74c3c; }
     .paywall-theme { border-top: 10px solid #4caf50; }
     
-    .koji-brand-holder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 15px;
+    .koji-brand img {
+      width: 85px; height: 85px;
+      object-fit: contain; border-radius: 50%;
+      background-color: #e2ebd9; padding: 5px; margin-bottom: 12px;
     }
-    .avatar-koji {
-      font-size: 50px;
-      background: #e2ebd9;
-      width: 80px;
-      height: 80px;
-      line-height: 80px;
-      border-radius: 50%;
-      display: inline-block;
-      margin-bottom: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    .guard-dog-img {
+      width: 750px; height: 380px;
+      max-width: 140%; object-fit: contain;
+      margin-bottom: -55px; margin-top: -70px;
+      transform: scale(1.9);
     }
-    .avatar-dog {
-      font-size: 80px;
-      margin-bottom: 10px;
-      display: inline-block;
-      animation: heartBeat 2s infinite;
-    }
-    h1 { margin: 0 0 10px 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+    h1 { margin: 0 0 10px 0; font-size: 28px; font-weight: 800; }
     .text-setup { color: #2d5a27; }
     .text-intercept { color: #c0392b; }
     
@@ -95,38 +83,32 @@
     .btn-bypass { background-color: #7f8c8d; color: white; font-size: 15px; }
     .btn-subscribe { background-color: #4caf50; color: white; font-size: 22px; width: 100%; margin-top: 15px; }
     
-    .clock-display { font-size: 46px; font-weight: bold; color: #c0392b; letter-spacing: 1px; margin: 10px 0; text-align: center; }
+    .clock-display { font-size: 42px; font-weight: bold; color: #c0392b; letter-spacing: 1px; margin: 10px 0; text-align: center; }
     .dump-feed { max-height: 65px; overflow-y: auto; font-size: 12px; padding-left: 20px; margin: 5px 0 0 0; }
-    
-    @keyframes heartBeat {
-      0% { transform: scale(1); }
-      14% { transform: scale(1.1); }
-      28% { transform: scale(1); }
-    }
   </style>
 </head>
 <body>
 
-  <!-- Full-screen invisible interception overlay layer -->
+  <!-- Full-screen interaction layer to instantly deploy loops past autoplay limits -->
   <div id="mediaForcefieldOverlay" onmousemove="forceAudioPlay()" onmouseenter="forceAudioPlay()" onclick="forceAudioPlay()"></div>
 
-  <!-- Bulletproof fallback looping alert engine -->
+  <!-- Audio playback tracks featuring valid file asset mapping strings -->
   <audio id="barkingEngine" loop preload="auto">
+    <source src="bark.mp3" type="audio/mpeg">
     <source src="https://mixkit.co" type="audio/wav">
   </audio>
 
-  <!-- Main UI Container Viewport -->
   <div id="masterApplicationViewport"></div>
 
   <script>
     const audioNode = document.getElementById('barkingEngine');
     const overlayNode = document.getElementById('mediaForcefieldOverlay');
     
-    const SHIFT_SECONDS = 8 * 60 * 60; // 8 Hours focus lock
+    const SHIFT_SECONDS = 8 * 60 * 60; // 8-Hour countdown configuration
     let operationalClockLoop;
     let mockInterceptionTimeout;
 
-    // --- 1. BILLING FRAMEWORK ENGINE (30-DAY TIMELINE WINDOW) ---
+    // --- 1. BILLING LEDGER TIMELINE (30-DAY LOGIC) ---
     const TIME_LIMIT_DAYS = 30;
     const rightNow = Date.now();
     let activationStamp = localStorage.getItem('k_saas_final_date');
@@ -148,7 +130,7 @@
       if (trialDaysLeft <= 0 && !premiumToken) {
         renderPaywallGateway();
       } else {
-        if (localStorage.getItem('k_shield_active_final') === 'true' && localStorage.getItem('k_intercept_tripped_final') === 'true') {
+        if (localStorage.getItem('k_shield_state') === 'true' && localStorage.getItem('k_intercept_tripped') === 'true') {
           renderInterceptorScreen();
         } else {
           renderSetupController();
@@ -156,17 +138,17 @@
       }
     }
 
-    // --- 2. RENDER STAGE 1: CONTROLLER DASHBOARD PANEL ---
+    // --- 2. THE DASHBOARD CONTROLLER FRAMEWAY ---
     function renderSetupController() {
       muteAudioTrack();
       if(overlayNode) overlayNode.style.display = 'none';
       
-      const trialStatusText = premiumToken ? "🌲 Koji's Permanent Cross-Platform Shield Active" : `⏳ Free Trial Active: ${trialDaysLeft} Days Left (No Credit Card Required)`;
+      const trialStatusText = premiumToken ? "🌲 Koji's Permanent Built-In Shield Active" : `Expedition Day: ${31 - trialDaysLeft} of 30 (Free Trial Active)`;
       
       document.getElementById('masterApplicationViewport').innerHTML = `
         <div class="panel-container setup-theme">
-          <div class="koji-brand-holder">
-            <span class="avatar-koji">🦊</span>
+          <div class="koji-brand">
+            <img src="koji.png" alt="Koji Avatar" onerror="this.style.display='none'">
             <h1 class="text-setup">Koji's Focus Shield</h1>
           </div>
           <div class="trial-tag">${trialStatusText}</div>
@@ -186,7 +168,7 @@
         </div>
       `;
       
-      let database = JSON.parse(localStorage.getItem('k_saas_final_dumps') || '[]');
+      let database = JSON.parse(localStorage.getItem('k_saas_dumps') || '[]');
       database.forEach(addDumpItemToUI);
       syncDashboardTimerUI();
     }
@@ -195,9 +177,9 @@
       const field = document.getElementById('dumpInput');
       const text = field.value.trim();
       if(!text) return;
-      let database = JSON.parse(localStorage.getItem('k_saas_final_dumps') || '[]');
+      let database = JSON.parse(localStorage.getItem('k_saas_dumps') || '[]');
       database.push(text);
-      localStorage.setItem('k_saas_final_dumps', JSON.stringify(database));
+      localStorage.setItem('k_saas_dumps', JSON.stringify(database));
       addDumpItemToUI(text);
       field.value = '';
     }
@@ -212,15 +194,15 @@
     }
 
     function processShieldStateToggle() {
-      let isShieldOnline = localStorage.getItem('k_shield_active_final') === 'true';
+      let isShieldOnline = localStorage.getItem('k_shield_state') === 'true';
       const btn = document.getElementById('shieldToggleActionBtn');
       
       if (isShieldOnline) {
         const pin = prompt("Enter your 4-digit Screen Time Pin to cancel the active shield protection:");
         if (pin === "4444") {
-          localStorage.setItem('k_shield_active_final', 'false');
-          localStorage.removeItem('k_timer_start_epoch_final');
-          localStorage.removeItem('k_intercept_tripped_final');
+          localStorage.setItem('k_shield_state', 'false');
+          localStorage.removeItem('k_timer_start_epoch');
+          localStorage.removeItem('k_intercept_tripped');
           clearInterval(operationalClockLoop);
           clearTimeout(mockInterceptionTimeout);
           btn.innerText = "Activate 8-Hour Shield";
@@ -231,22 +213,32 @@
           alert("❌ Incorrect Screen Time PIN! Protection layout stays active.");
         }
       } else {
-        localStorage.setItem('k_shield_active_final', 'true');
-        localStorage.setItem('k_timer_start_epoch_final', Date.now());
+        localStorage.setItem('k_shield_state', 'true');
+        localStorage.setItem('k_timer_start_epoch', Date.now());
         btn.innerText = "Shield Active (Click to Lower)";
         btn.classList.add('btn-active');
         syncDashboardTimerUI();
-        alert("🚀 8-Hour Focus Shield active! Cross-platform restrictions deployed across iOS, Android, PC, and Mac layers.");
+        alert("🚀 8-Hour Focus Shield and custom platform restrictions deployed!");
         
-        // Automated Boundary Trip Simulation (Launches Page 2 block layout after 3 seconds)
+        // Automated Simulation Trigger: Pops open warning window 4 seconds after arming
         mockInterceptionTimeout = setTimeout(() => {
-          localStorage.setItem('k_intercept_tripped_final', 'true');
+          localStorage.setItem('k_intercept_tripped', 'true');
           renderInterceptorScreen();
-        }, 3000);
+        }, 4000);
       }
     }
 
     function syncDashboardTimerUI() {
-      let startTime = localStorage.getItem('k_timer_start_epoch_final');
-      if(!startTime || localStorage.getItem('k_shield_active_final') !== 'true') return;
+      let startTime = localStorage.getItem('k_timer_start_epoch');
+      if(!startTime || localStorage.getItem('k_shield_state') !== 'true') return;
       
+      const btn = document.getElementById('shieldToggleActionBtn');
+      if(btn) { btn.innerText = "Shield Active (Click to Lower)"; btn.classList.add('btn-active'); }
+
+      clearInterval(operationalClockLoop);
+      operationalClockLoop = setInterval(() => {
+        let elapsed = Math.floor((Date.now() - startTime) / 1000);
+        let remaining = SHIFT_SECONDS - elapsed;
+
+        if (remaining <= 0) {
+          clearInterval(operationalClockLoop);
